@@ -198,7 +198,6 @@ function validarImagen(event){
 function validarFormControl(eventInput){
     var validado = false;
 	if((eventInput.value == "" || eventInput.value == null) && eventInput.required == true && eventInput.disabled != true){
-		console.log("entro")
 		validado = false;
 		eventInput.nextElementSibling.style.display = 'block';
 	}
