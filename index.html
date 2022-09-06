@@ -40,7 +40,7 @@
 						<h2>Detalles del pedido</h2>
 						<div class="mb-3">
 							<label for="pedido" class="form-label">¿Que debe buscar el cadete?</label>
-							<input type="text" class="form-control" id="pedido" minlength="3" maxlength="30" required>
+							<input type="text" class="form-control" id="pedido" required onkeyup="validarFormControl(this)">
 							<span class="validacion" style="display: none">
 								* El campo es obligatorio
 							</span>
@@ -56,21 +56,21 @@
 						<h4>Dirección del comercio</h4> <br>
 						<div class="col-md-8">
 							<label for="direccionRec" class="form-label">Calle</label>
-							<input type="text" pattern="[7-9]{1}[0-9]{9}" class="form-control" id="direccionRec" required>
+							<input type="text" pattern="[7-9]{1}[0-9]{9}" class="form-control" id="direccionRec" required onkeyup="validarFormControl(this)">
 							<span class="validacion" style="display: none">
 								* El campo es obligatorio
 							</span>
 						</div>
 						<div class="col-md-4">
 							<label for="numeroRec" class="form-label">Número</label>
-							<input type="number" class="form-control" id="numeroRec" required>
+							<input type="number" class="form-control" id="numeroRec" required onkeyup="validarFormControl(this)">
 							<span class="validacion" style="display: none">
 								* El campo es obligatorio
 							</span>
 						</div>
 						<div class="col-md-12">
 							<label for="ciudad" class="form-label">Ciudad</label>
-							<select class="form-select" id="ciudadComercio" required>
+							<select class="form-select" id="ciudadComercio" required onchange="validarFormControl(this)">
 								<option selected value="">Seleccione una ciudad</option>
 								<option value="100">Córdoba</option>
 								<option value="150">Calera</option>
@@ -95,7 +95,7 @@
 						<h4>Dirección de la entrega</h4> <br>
 						<div class="col-md-6">
 							<label for="entrega" class="form-label">¿Cuando desea recibir su Pedido?</label>
-							<select class="form-select" id="entrega" onchange="opcionEntrega()" required>
+							<select class="form-select" id="entrega" onchange="opcionEntrega(); validarFormControl(this)" required onkeypress="validarFormControl(this)">
 								<option selected value="" disabled>Seleccione una opcion</option>
 								<option value="1">Lo antes posible</option>
 								<option value="2">Programar Fecha y hora</option>
@@ -106,28 +106,28 @@
 						</div>
 						<div class="col-md-6">
 							<label for="fechaEntrega" class="form-label">Fecha y hora de entrega</label>
-							<input type="datetime-local" class="form-control" id="fechaEntrega" disabled required>
+							<input type="datetime-local" class="form-control" id="fechaEntrega" disabled required onchange="validarFormControl(this)">
 							<span class="validacion" style="display: none">
 								* Debe seleccionar una fecha de entrega
 							</span>
 						</div>
 						<div class="col-md-8">
 							<label for="direccionRec" class="form-label">Calle</label>
-							<input type="text" pattern="[7-9]{1}[0-9]{9}" class="form-control" id="direccionRec" placeholder="" required>
+							<input type="text" pattern="[7-9]{1}[0-9]{9}" class="form-control" id="direccionRec" required onkeyup="validarFormControl(this)">
 							<span class="validacion" style="display: none">
 								* El campo es obligatorio
 							</span>
 						</div>
 						<div class="col-md-4">
 							<label for="numeroRec" class="form-label">Número</label>
-							<input type="number" class="form-control" id="numeroRec" required>
+							<input type="number" class="form-control" id="numeroRec" required onkeyup="validarFormControl(this)">
 							<span class="validacion" style="display: none">
 								* El campo es obligatorio
 							</span>
 						</div>
 						<div class="col-md-12">
 							<label for="ciudad" class="form-label">Ciudad</label>
-							<select class="form-select" id="ciudadEntrega" required>
+							<select class="form-select" id="ciudadEntrega" required onchange="validarFormControl(this)">
 								<option selected value="">Seleccione una ciudad</option>
 								<option value="100">Córdoba</option>
 								<option value="150">Calera</option>
@@ -156,7 +156,7 @@
 						</div>
 						<div class="col-md-12">
 							<label for="tipoPago" class="form-label">Forma de Pago</label>
-							<select class="form-select" id="tipoPago" onchange="opcionPago()" required>
+							<select class="form-select" id="tipoPago" onchange="opcionPago(); validarFormControl(this)" required>
 								<option selected value="" disabled>Seleccione una forma de Pago</option>
 								<option value="1">Efectivo</option>
 								<option value="2">Tarjeta</option>
@@ -168,9 +168,12 @@
 						<div id="pagoEfectivo" hidden class=" row g-3">
 							<div class="col-md-12">
 								<label for="efectivoMonto" class="form-label">Monto con el que abona</label>
-								<input type="number" class="form-control" id="efectivoMonto" min="100" required disabled>
+								<input type="number" class="form-control" id="efectivoMonto" min="100" required disabled onkeyup="validarFormControl(this)">
 								<span class="validacion" style="display: none">
 									* El campo es obligatorio
+								</span>
+								<span class="validacion" id="montoMenor" style="display: none">
+									* Debe pagar con un monto mayor
 								</span>
 							</div>
 							<div class="col-md-12">
@@ -183,14 +186,14 @@
 						<div id="pagoTarjeta" hidden  class=" row g-3">
 							<div class="col-md-12">
 								<label for="tarjetaNumero" class="form-label">Número de la tarjeta</label>
-								<input type="number" class="form-control" id="tarjetaNumero" minlength="16" maxlength="16" required disabled>
+								<input type="number" class="form-control" id="tarjetaNumero" minlength="16" maxlength="16" required disabled onkeyup="validarFormControl(this)">
 								<span class="validacion" style="display: none">
 									* El campo es obligatorio
 								</span>
 							</div>
 							<div class="col-md-12">
 								<label for="tarjetaNombre" class="form-label">Nombre que figura en la tarjeta</label>
-								<input type="text" class="form-control" id="tarjetaNombre" required disabled>
+								<input type="text" class="form-control" id="tarjetaNombre" required disabled onkeyup="validarFormControl(this)">
 								<span class="validacion" style="display: none">
 									* El campo es obligatorio
 								</span>
@@ -198,14 +201,14 @@
 							<div class="col-md-6">
 								<label for="tarjetaVencimiento" class="form-label">Fecha de vencimiento de la
 									tarjeta</label>
-								<input type="date" class="form-control" id="tarjetaVencimiento" required disabled>
+								<input type="date" class="form-control" id="tarjetaVencimiento" required disabled onkeyup="validarFormControl(this)">
 								<span class="validacion" style="display: none">
 									* El campo es obligatorio
 								</span>
 							</div>
 							<div class="col-md-6">
 								<label for="tarjetaCVC" class="form-label">CVC</label>
-								<input type="number" class="form-control" id="tarjetaCVC"  minlength="3" maxlength="3" required disabled>
+								<input type="number" class="form-control" id="tarjetaCVC"  minlength="3" maxlength="3" required disabled onkeyup="validarFormControl(this)">
 								<span class="validacion" placeholder="" style="display: none" >
 									* El campo es obligatorio
 								</span>

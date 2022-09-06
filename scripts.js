@@ -71,7 +71,7 @@ form_3_back_btn.addEventListener("click", function(){
 });
 
 btn_done.addEventListener("click", function(){
-	if(validarFormularioSM("formaPago")){
+	if(validarFormularioSM("formaPago") && validarMonto){
 		modal_wrapper.classList.add("active");
 	}
 
@@ -79,6 +79,7 @@ btn_done.addEventListener("click", function(){
 
 shadow.addEventListener("click", function(){
 	modal_wrapper.classList.remove("active");
+	location.reload();
 })
 
 
@@ -90,16 +91,15 @@ function validarFormularioSM(formularioId){
             validado = false;
             elementos[i].focus();
 			elementos[i].nextElementSibling.style.display = 'block';
-            return false;
         }
 		else if (elementos[i].nextElementSibling) {
 			elementos[i].nextElementSibling.style.display = 'none';
 		}
     }
     if(validado){
-        return true;
+		validado = true;
     }
-
+	return validado
 }
 
 function selectValue(selectId){
@@ -165,7 +165,12 @@ function getVuelto() {
 			document.getElementById('vuelto').style.display = "block";
 		}
 		else {
+			document.getElementById('montoMenor').style.display = "block";
 			document.getElementById('vuelto').style.display = "none";
+		}
+		if(montoVuelto >= 0) {
+			document.getElementById('montoMenor').style.display = "none";
+
 		}
 	})
 
@@ -188,4 +193,24 @@ function validarImagen(event){
 		event.value = null;
 		event.nextElementSibling.style.display = 'block';
 	}
+}
+
+function validarFormControl(eventInput){
+    var validado = false;
+	if((eventInput.value == "" || eventInput.value == null) && eventInput.required == true && eventInput.disabled != true){
+		console.log("entro")
+		validado = false;
+		eventInput.nextElementSibling.style.display = 'block';
+	}
+	else if (eventInput.nextElementSibling) {
+		eventInput.nextElementSibling.style.display = 'none';
+	}
+    if(validado){
+		validado = true;
+    }
+	return validado
+}
+
+function validarMonto() { 
+	return document.getElementById('efectivoMonto').value < getMonto() ? false : true; 
 }
