@@ -44,7 +44,7 @@ form_2_back_btn.addEventListener("click", function(){
 });
 
 form_2_next_btn.addEventListener("click", function(){
-	if(validarFormularioSM("datosEntrega")){
+	if(validarFormularioSM("datosEntrega") && isDateValid('fechaEntrega')){
 
 		form_2.style.display = "none";
 		form_3.style.display = "block";
@@ -53,6 +53,7 @@ form_2_next_btn.addEventListener("click", function(){
 		form_2_btns.style.display = "none";
 
 		form_3_progessbar.classList.add("active");
+		setMonto();
 	}
 
 });
@@ -70,7 +71,7 @@ form_3_back_btn.addEventListener("click", function(){
 });
 
 btn_done.addEventListener("click", function(){
-	if(validarFormularioSM("formaPago")){
+	if(validarFormularioSM("formaPago") && validarMonto){
 		modal_wrapper.classList.add("active");
 	}
 
@@ -78,23 +79,27 @@ btn_done.addEventListener("click", function(){
 
 shadow.addEventListener("click", function(){
 	modal_wrapper.classList.remove("active");
+	location.reload();
 })
 
 
 function validarFormularioSM(formularioId){
     var validado = true;
     elementos = document.querySelectorAll(`#${formularioId} select, #${formularioId} input`);
-    for(i=0;i<elementos.length;i++){
-        if((elementos[i].value == "" || elementos[i].value == null) && elementos[i].type !='file' && elementos[i].disabled != true){
+	for(i=0;i<elementos.length;i++){
+        if((elementos[i].value == "" || elementos[i].value == null) && elementos[i].required == true && elementos[i].disabled != true){
             validado = false;
             elementos[i].focus();
-            return false;
+			elementos[i].nextElementSibling.style.display = 'block';
         }
+		else if (elementos[i].nextElementSibling) {
+			elementos[i].nextElementSibling.style.display = 'none';
+		}
     }
     if(validado){
-        return true;
+		validado = true;
     }
-
+	return validado
 }
 
 function selectValue(selectId){
@@ -117,14 +122,94 @@ function opcionEntrega(){
 function opcionPago(){
 	let pagoEfectivo = document.getElementById("pagoEfectivo")
 	let pagoTarjeta = document.getElementById("pagoTarjeta")
+	let efectivoMonto = document.getElementById("efectivoMonto");
+	let tarjetaNumero = document.getElementById("tarjetaNumero");
+	let tarjetaNombre = document.getElementById("tarjetaNombre");
+	let tarjetaVencimiento = document.getElementById("tarjetaVencimiento");
+	let tarjetaCVC = document.getElementById("tarjetaCVC");
 
 	let optPago = selectValue("tipoPago");
 
 	if (optPago == 1) {
 		pagoEfectivo.hidden = false;
 		pagoTarjeta.hidden = true;
+
+		efectivoMonto.disabled = false;
+		getVuelto();
 	}else{
 		pagoEfectivo.hidden = true;
 		pagoTarjeta.hidden = false;
+
+		tarjetaNumero.disabled = false;
+		tarjetaNombre.disabled = false;
+		tarjetaVencimiento.disabled = false;
+		tarjetaCVC.disabled = false;
 	}
+}
+
+function setMonto() {
+	document.getElementById('montoTotal').textContent = document.getElementById('montoTotal').textContent.replace('monto', selectValue('ciudadEntrega') * 100)
+}
+
+function getMonto() {
+	return document.getElementById('montoTotal').textContent; 
+}
+
+function getVuelto() {
+	document.getElementById('montoVuelto').textContent = getMonto() - document.getElementById('efectivoMonto').value;
+	
+	document.getElementById('efectivoMonto').addEventListener("keyup", function(){
+		let montoVuelto = document.getElementById('efectivoMonto').value - getMonto();
+		if(montoVuelto > 0) {
+			document.getElementById('montoVuelto').textContent = montoVuelto;
+			document.getElementById('vuelto').style.display = "block";
+		}
+		else {
+			document.getElementById('montoMenor').style.display = "block";
+			document.getElementById('vuelto').style.display = "none";
+		}
+		if(montoVuelto >= 0) {
+			document.getElementById('montoMenor').style.display = "none";
+
+		}
+	})
+
+}
+
+function isDateValid(dateControlId) {
+    dateElement = document.getElementById(dateControlId);
+	const hoy = new Date(Date.now());
+	const dateHoy = hoy.toISOString()
+	if(dateElement.disabled != true && dateElement.type == 'date' && dateHoy < dateElement.value.toISOString()) { //TODO: validar fecha
+		return false
+	}
+	return true;
+}
+
+function validarImagen(event){
+	var sizeByte = event.files[0].size;
+	var siezekiloByte = parseInt(sizeByte / 1024); //size in KB
+	if(siezekiloByte > 1024) {
+		event.value = null;
+		event.nextElementSibling.style.display = 'block';
+	}
+}
+
+function validarFormControl(eventInput){
+    var validado = false;
+	if((eventInput.value == "" || eventInput.value == null) && eventInput.required == true && eventInput.disabled != true){
+		validado = false;
+		eventInput.nextElementSibling.style.display = 'block';
+	}
+	else if (eventInput.nextElementSibling) {
+		eventInput.nextElementSibling.style.display = 'none';
+	}
+    if(validado){
+		validado = true;
+    }
+	return validado
+}
+
+function validarMonto() { 
+	return document.getElementById('efectivoMonto').value < getMonto() ? false : true; 
 }
