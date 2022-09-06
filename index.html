@@ -47,13 +47,16 @@
 						</div>
 						<div class="mb-3">
 							<label for="imagen" class="form-label">Imagen de su pedido (Opcional)</label>
-							<input type="file" class="form-control" id="pedidoImagen" placeholder="">
+							<input type="file" accept=".jpeg,.jpg,.png" class="form-control" id="pedidoImagen" onchange="validarImagen(this)">
+							<span class="validacion" style="display: none">
+								* El tamaño de la imagen supera el limite permitido
+							</span>
 						</div>
 						<h2>Datos del comercio</h2>
 						<h4>Dirección del comercio</h4> <br>
 						<div class="col-md-8">
 							<label for="direccionRec" class="form-label">Calle</label>
-							<input type="text" pattern="[7-9]{1}[0-9]{9}" class="form-control" id="direccionRec" placeholder="" required>
+							<input type="text" pattern="[7-9]{1}[0-9]{9}" class="form-control" id="direccionRec" required>
 							<span class="validacion" style="display: none">
 								* El campo es obligatorio
 							</span>
@@ -103,9 +106,9 @@
 						</div>
 						<div class="col-md-6">
 							<label for="fechaEntrega" class="form-label">Fecha y hora de entrega</label>
-							<input type="datetime-local" class="form-control" id="fechaEntrega" placeholder="" disabled>
+							<input type="datetime-local" class="form-control" id="fechaEntrega" disabled required>
 							<span class="validacion" style="display: none">
-								* El campo es obligatorio
+								* Debe seleccionar una fecha de entrega
 							</span>
 						</div>
 						<div class="col-md-8">
@@ -165,7 +168,7 @@
 						<div id="pagoEfectivo" hidden class=" row g-3">
 							<div class="col-md-12">
 								<label for="efectivoMonto" class="form-label">Monto con el que abona</label>
-								<input type="number" class="form-control" id="efectivoMonto" min="100" required>
+								<input type="number" class="form-control" id="efectivoMonto" min="100" required disabled>
 								<span class="validacion" style="display: none">
 									* El campo es obligatorio
 								</span>
@@ -180,14 +183,14 @@
 						<div id="pagoTarjeta" hidden  class=" row g-3">
 							<div class="col-md-12">
 								<label for="tarjetaNumero" class="form-label">Número de la tarjeta</label>
-								<input type="number" class="form-control" id="tarjetaNumero" minlength="16" maxlength="16" required>
+								<input type="number" class="form-control" id="tarjetaNumero" minlength="16" maxlength="16" required disabled>
 								<span class="validacion" style="display: none">
 									* El campo es obligatorio
 								</span>
 							</div>
 							<div class="col-md-12">
 								<label for="tarjetaNombre" class="form-label">Nombre que figura en la tarjeta</label>
-								<input type="text" class="form-control" id="tarjetaNombre" required>
+								<input type="text" class="form-control" id="tarjetaNombre" required disabled>
 								<span class="validacion" style="display: none">
 									* El campo es obligatorio
 								</span>
@@ -195,14 +198,14 @@
 							<div class="col-md-6">
 								<label for="tarjetaVencimiento" class="form-label">Fecha de vencimiento de la
 									tarjeta</label>
-								<input type="date" class="form-control" id="tarjetaVencimiento" required>
+								<input type="date" class="form-control" id="tarjetaVencimiento" required disabled>
 								<span class="validacion" style="display: none">
 									* El campo es obligatorio
 								</span>
 							</div>
 							<div class="col-md-6">
 								<label for="tarjetaCVC" class="form-label">CVC</label>
-								<input type="number" class="form-control" id="tarjetaCVC"  minlength="3" maxlength="3" required>
+								<input type="number" class="form-control" id="tarjetaCVC"  minlength="3" maxlength="3" required disabled>
 								<span class="validacion" placeholder="" style="display: none" >
 									* El campo es obligatorio
 								</span>

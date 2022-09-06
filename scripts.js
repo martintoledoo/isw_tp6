@@ -44,7 +44,7 @@ form_2_back_btn.addEventListener("click", function(){
 });
 
 form_2_next_btn.addEventListener("click", function(){
-	if(validarFormularioSM("datosEntrega")){
+	if(validarFormularioSM("datosEntrega") && isDateValid('fechaEntrega')){
 
 		form_2.style.display = "none";
 		form_3.style.display = "block";
@@ -122,16 +122,28 @@ function opcionEntrega(){
 function opcionPago(){
 	let pagoEfectivo = document.getElementById("pagoEfectivo")
 	let pagoTarjeta = document.getElementById("pagoTarjeta")
+	let efectivoMonto = document.getElementById("efectivoMonto");
+	let tarjetaNumero = document.getElementById("tarjetaNumero");
+	let tarjetaNombre = document.getElementById("tarjetaNombre");
+	let tarjetaVencimiento = document.getElementById("tarjetaVencimiento");
+	let tarjetaCVC = document.getElementById("tarjetaCVC");
 
 	let optPago = selectValue("tipoPago");
 
 	if (optPago == 1) {
 		pagoEfectivo.hidden = false;
 		pagoTarjeta.hidden = true;
+
+		efectivoMonto.disabled = false;
 		getVuelto();
 	}else{
 		pagoEfectivo.hidden = true;
 		pagoTarjeta.hidden = false;
+
+		tarjetaNumero.disabled = false;
+		tarjetaNombre.disabled = false;
+		tarjetaVencimiento.disabled = false;
+		tarjetaCVC.disabled = false;
 	}
 }
 
@@ -157,4 +169,23 @@ function getVuelto() {
 		}
 	})
 
+}
+
+function isDateValid(dateControlId) {
+    dateElement = document.getElementById(dateControlId);
+	const hoy = new Date(Date.now());
+	const dateHoy = hoy.toISOString()
+	if(dateElement.disabled != true && dateElement.type == 'date' && dateHoy < dateElement.value.toISOString()) { //TODO: validar fecha
+		return false
+	}
+	return true;
+}
+
+function validarImagen(event){
+	var sizeByte = event.files[0].size;
+	var siezekiloByte = parseInt(sizeByte / 1024); //size in KB
+	if(siezekiloByte > 1024) {
+		event.value = null;
+		event.nextElementSibling.style.display = 'block';
+	}
 }
