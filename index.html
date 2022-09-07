@@ -108,7 +108,10 @@
 							<label for="fechaEntrega" class="form-label">Fecha y hora de entrega</label>
 							<input type="datetime-local" class="form-control" id="fechaEntrega" disabled required onchange="validarFormControl(this)">
 							<span class="validacion" style="display: none">
-								* Debe seleccionar una fecha de entrega
+								* Debe seleccionar una fecha y hora de entrega
+							</span>
+							<span class="validacion" style="display: none" id="fechaMayor">
+								* Debe seleccionar una fecha y/o hora mayor
 							</span>
 						</div>
 						<div class="col-md-8">
@@ -186,14 +189,17 @@
 						<div id="pagoTarjeta" hidden  class=" row g-3">
 							<div class="col-md-12">
 								<label for="tarjetaNumero" class="form-label">Número de la tarjeta</label>
-								<input type="number" class="form-control" id="tarjetaNumero" minlength="16" maxlength="16" required disabled onkeyup="validarFormControl(this)">
+								<input type="number" pattern="/[0-9]{16}/" class="form-control" id="tarjetaNumero" minlength="16" maxlength="16" required disabled onkeyup="validarFormControl(this, /[0-9]{16}/)">
 								<span class="validacion" style="display: none">
 									* El campo es obligatorio
+								</span>
+								<span class="validacion" style="display: none">
+									* El número de la tarjeta es invalido
 								</span>
 							</div>
 							<div class="col-md-12">
 								<label for="tarjetaNombre" class="form-label">Nombre que figura en la tarjeta</label>
-								<input type="text" class="form-control" id="tarjetaNombre" required disabled onkeyup="validarFormControl(this)">
+								<input type="text" pattern="[a-z]{40}" class="form-control" id="tarjetaNombre" required disabled onkeyup="validarFormControl(this)">
 								<span class="validacion" style="display: none">
 									* El campo es obligatorio
 								</span>
@@ -201,16 +207,22 @@
 							<div class="col-md-6">
 								<label for="tarjetaVencimiento" class="form-label">Fecha de vencimiento de la
 									tarjeta</label>
-								<input type="date" class="form-control" id="tarjetaVencimiento" required disabled onkeyup="validarFormControl(this)">
+								<input type="text" pattern=/[0-9]{2}\/[0-9]{2}/ class="form-control" id="tarjetaVencimiento" minlength="5" maxlength="5" disabled required onkeyup="validarFormControl(this, /[0-9]{2}\/[0-9]{2}/)">
 								<span class="validacion" style="display: none">
 									* El campo es obligatorio
+								</span>
+								<span class="validacion" style="display: none" id='tarjetaVencida'>
+									* Fecha de vencimiento invalida
 								</span>
 							</div>
 							<div class="col-md-6">
 								<label for="tarjetaCVC" class="form-label">CVC</label>
-								<input type="number" class="form-control" id="tarjetaCVC"  minlength="3" maxlength="3" required disabled onkeyup="validarFormControl(this)">
+								<input type="text" pattern="/[0-9]{3}/" class="form-control" id="tarjetaCVC" disabled required onkeyup="validarFormControl(this, /[0-9]{3}/)">
 								<span class="validacion" placeholder="" style="display: none" >
 									* El campo es obligatorio
+								</span>
+								<span class="validacion" placeholder="" style="display: none" >
+									* Código de seguridad invalido
 								</span>
 							</div>
 						</div>

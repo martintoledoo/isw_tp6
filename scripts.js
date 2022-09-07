@@ -44,7 +44,7 @@ form_2_back_btn.addEventListener("click", function(){
 });
 
 form_2_next_btn.addEventListener("click", function(){
-	if(validarFormularioSM("datosEntrega") && isDateValid('fechaEntrega')){
+	if(validarFormularioSM("datosEntrega") && isDateEntregaValid('tarjetaVencimiento')){
 
 		form_2.style.display = "none";
 		form_3.style.display = "block";
@@ -71,7 +71,7 @@ form_3_back_btn.addEventListener("click", function(){
 });
 
 btn_done.addEventListener("click", function(){
-	if(validarFormularioSM("formaPago") && validarMonto){
+	if(validarFormularioSM("formaPago") && validarMonto() && isDateTarjetaValid('tarjetaVencimiento')){
 		modal_wrapper.classList.add("active");
 	}
 
@@ -88,12 +88,15 @@ function validarFormularioSM(formularioId){
     elementos = document.querySelectorAll(`#${formularioId} select, #${formularioId} input`);
 	for(i=0;i<elementos.length;i++){
         if((elementos[i].value == "" || elementos[i].value == null) && elementos[i].required == true && elementos[i].disabled != true){
-            validado = false;
+			validado = false;
             elementos[i].focus();
 			elementos[i].nextElementSibling.style.display = 'block';
         }
 		else if (elementos[i].nextElementSibling) {
 			elementos[i].nextElementSibling.style.display = 'none';
+		}
+		if(elementos[i].disabled != true && elementos[i].pattern && elementos[i].nextElementSibling.nextElementSibling && elementos[i].nextElementSibling.nextElementSibling.style.display === 'block') {
+			validado = false
 		}
     }
     if(validado){
@@ -115,6 +118,7 @@ function opcionEntrega(){
 	if (optEntrega == 2) {
 		fechaEntrega.disabled = false;
 	}else{
+		document.getElementById('fechaMayor').style.display = 'none';
 		fechaEntrega.disabled = true;
 	}
 }
@@ -134,6 +138,11 @@ function opcionPago(){
 		pagoEfectivo.hidden = false;
 		pagoTarjeta.hidden = true;
 
+		tarjetaNumero.disabled = true;
+		tarjetaNombre.disabled = true;
+		tarjetaVencimiento.disabled = true;
+		tarjetaCVC.disabled = true;
+
 		efectivoMonto.disabled = false;
 		getVuelto();
 	}else{
@@ -144,6 +153,9 @@ function opcionPago(){
 		tarjetaNombre.disabled = false;
 		tarjetaVencimiento.disabled = false;
 		tarjetaCVC.disabled = false;
+
+		efectivoMonto.disabled = true;
+
 	}
 }
 
@@ -176,12 +188,35 @@ function getVuelto() {
 
 }
 
-function isDateValid(dateControlId) {
+function isDateEntregaValid(dateControlId) {
     dateElement = document.getElementById(dateControlId);
 	const hoy = new Date(Date.now());
 	const dateHoy = hoy.toISOString()
-	if(dateElement.disabled != true && dateElement.type == 'date' && dateHoy < dateElement.value.toISOString()) { //TODO: validar fecha
-		return false
+	if(!dateElement.disabled) {
+		if(Date.parse(dateHoy) < Date.parse(dateElement.value)) {
+			document.getElementById('fechaMayor').style.display = 'none';
+			return true;
+		}
+		dateElement.focus();
+		document.getElementById('fechaMayor').style.display = 'block';
+		return false;
+	}
+
+	return true
+}
+
+function isDateTarjetaValid(dateControlId) {
+	dateElement = document.getElementById(dateControlId);
+	if(!dateElement.disabled) {
+		const hoy = new Date(Date.now());
+		// const dateHoy = '0' + hoy.getMonth() + '/' + hoy.getYear();
+		const dateHoy = '0' + hoy.getMonth() + '/22';
+		if(Date.parse('01/' + dateHoy) <= Date.parse('01/' + dateElement.value)) {
+			document.getElementById('tarjetaVencida').style.display = 'none';
+			return true
+		}
+		document.getElementById('tarjetaVencida').style.display = 'block';
+		return false;
 	}
 	return true;
 }
@@ -195,8 +230,8 @@ function validarImagen(event){
 	}
 }
 
-function validarFormControl(eventInput){
-    var validado = false;
+function validarFormControl(eventInput, regex = null ){
+    var validado = true;
 	if((eventInput.value == "" || eventInput.value == null) && eventInput.required == true && eventInput.disabled != true){
 		validado = false;
 		eventInput.nextElementSibling.style.display = 'block';
@@ -204,12 +239,24 @@ function validarFormControl(eventInput){
 	else if (eventInput.nextElementSibling) {
 		eventInput.nextElementSibling.style.display = 'none';
 	}
+	if(regex != null) {
+		validado = regex.test(eventInput.value)
+		if(!validado) {
+			eventInput.nextElementSibling.nextElementSibling.style.display = 'block'
+		}
+		else {
+			eventInput.nextElementSibling.nextElementSibling.style.display = 'none'
+		}
+	}
     if(validado){
 		validado = true;
     }
 	return validado
 }
 
-function validarMonto() { 
-	return document.getElementById('efectivoMonto').value < getMonto() ? false : true; 
+function validarMonto() {
+	if(!document.getElementById('efectivoMonto').disabled) {
+		return document.getElementById('efectivoMonto').value < getMonto() ? false : true; 
+	}
+	return true
 }
