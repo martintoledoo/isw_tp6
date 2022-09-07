@@ -222,9 +222,10 @@ function isDateTarjetaValid(dateControlId) {
 }
 
 function validarImagen(event){
+	event.nextElementSibling.style.display = 'none';
 	var sizeByte = event.files[0].size;
 	var siezekiloByte = parseInt(sizeByte / 1024); //size in KB
-	if(siezekiloByte > 1024) {
+	if(siezekiloByte > 5120) {
 		event.value = null;
 		event.nextElementSibling.style.display = 'block';
 	}
