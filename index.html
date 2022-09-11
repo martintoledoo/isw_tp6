@@ -189,7 +189,7 @@
 						<div id="pagoTarjeta" hidden  class=" row g-3">
 							<div class="col-md-12">
 								<label for="tarjetaNumero" class="form-label">Número de la tarjeta</label>
-								<input type="number" pattern="/[0-9]{16}/" class="form-control" id="tarjetaNumero" minlength="16" maxlength="16" required disabled onkeyup="validarFormControl(this, /[0-9]{16}/)">
+								<input type="text" pattern="/[0-9]{16}/" class="form-control" id="tarjetaNumero" minlength="15" maxlength="16" required disabled onkeyup="validarFormControl(this, /[0-9]{16}/, true)">
 								<span class="validacion" style="display: none">
 									* El campo es obligatorio
 								</span>
@@ -217,7 +217,7 @@
 							</div>
 							<div class="col-md-6">
 								<label for="tarjetaCVC" class="form-label">CVC</label>
-								<input type="text" pattern="/[0-9]{3}/" class="form-control" id="tarjetaCVC" disabled required onkeyup="validarFormControl(this, /[0-9]{3}/)">
+								<input type="text" pattern="/[0-9]{3}/" class="form-control" maxlength="3" id="tarjetaCVC" disabled required onkeyup="validarFormControl(this, /[0-9]{3}/)">
 								<span class="validacion" placeholder="" style="display: none" >
 									* El campo es obligatorio
 								</span>

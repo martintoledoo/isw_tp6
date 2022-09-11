@@ -44,7 +44,7 @@ form_2_back_btn.addEventListener("click", function(){
 });
 
 form_2_next_btn.addEventListener("click", function(){
-	if(validarFormularioSM("datosEntrega") && isDateEntregaValid('tarjetaVencimiento')){
+	if(isDateEntregaValid('fechaEntrega') && validarFormularioSM("datosEntrega")){
 
 		form_2.style.display = "none";
 		form_3.style.display = "block";
@@ -117,6 +117,8 @@ function opcionEntrega(){
 
 	if (optEntrega == 2) {
 		fechaEntrega.disabled = false;
+		document.getElementById('fechaMayor').style.display = 'block';
+
 	}else{
 		document.getElementById('fechaMayor').style.display = 'none';
 		fechaEntrega.disabled = true;
@@ -192,7 +194,8 @@ function isDateEntregaValid(dateControlId) {
     dateElement = document.getElementById(dateControlId);
 	const hoy = new Date(Date.now());
 	const dateHoy = hoy.toISOString()
-	if(!dateElement.disabled) {
+	let optEntrega = selectValue("entrega");
+	if(optEntrega == 2) {
 		if(Date.parse(dateHoy) < Date.parse(dateElement.value)) {
 			document.getElementById('fechaMayor').style.display = 'none';
 			return true;
@@ -224,13 +227,15 @@ function isDateTarjetaValid(dateControlId) {
 function validarImagen(event){
 	var sizeByte = event.files[0].size;
 	var siezekiloByte = parseInt(sizeByte / 1024); //size in KB
-	if(siezekiloByte > 1024) {
+	if(siezekiloByte > 5120) {
 		event.value = null;
 		event.nextElementSibling.style.display = 'block';
+	} else {
+		event.nextElementSibling.style.display = 'none';
 	}
 }
 
-function validarFormControl(eventInput, regex = null ){
+function validarFormControl(eventInput, regex = null, isTarjeta = null ){
     var validado = true;
 	if((eventInput.value == "" || eventInput.value == null) && eventInput.required == true && eventInput.disabled != true){
 		validado = false;
